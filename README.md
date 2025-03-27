@@ -1,86 +1,60 @@
-# Developer Evaluation Project
+# Application Execution Guide
 
-`READ CAREFULLY`
+## 1. Prerequisites
+- Visual Studio 2022 installed
+- Docker Desktop installed and running
+- Git installed (optional, for cloning the repository)
 
-## Instructions
-**The test below will have up to 7 calendar days to be delivered from the date of receipt of this manual.**
+## 2. Start Docker Desktop
+1. Open Docker Desktop
+2. Wait until the system tray icon shows Docker is running (green icon)
+3. Check for any Docker Desktop errors
 
-- The code must be versioned in a public Github repository and a link must be sent for evaluation once completed
-- Upload this template to your repository and start working from it
-- Read the instructions carefully and make sure all requirements are being addressed
-- The repository must provide instructions on how to configure, execute and test the project
-- Documentation and overall organization will also be taken into consideration
+## 3. Start PostgreSQL Database via Docker
+1. Open PowerShell or Command Prompt
+2. Navigate to the project folder:
+```powershell
+cd {repo}\backend
+```
+3. Execute the command to start only PostgreSQL:
+```powershell
+docker-compose up -d postgres
+```
+4. Wait for the confirmation message that the container is running
 
-## Use Case
-**You are a developer on the DeveloperStore team. Now we need to implement the API prototypes.**
+## 4. Configure and Run the Application in Visual Studio
+1. Open Visual Studio 2022
+2. Open the project solution:
+   - Click on "File" > "Open" > "Project/Solution"
+   - Navigate to the project folder
+   - Select the `Ambev.DeveloperEvaluation.sln` file
 
-As we work with `DDD`, to reference entities from other domains, we use the `External Identities` pattern with denormalization of entity descriptions.
+## 5. Run Database Migrations
+1. In Visual Studio, open the "Package Manager Console":
+   - Click on "Tools" > "NuGet Package Manager" > "Package Manager Console"
+2. In the console, execute the following commands:
+```powershell
+Add-Migration InitialCreate
+Update-Database
+```
 
-Therefore, you will write an API (complete CRUD) that handles sales records. The API needs to be able to inform:
+## 6. Run the Application
+1. In Visual Studio, ensure the `Ambev.DeveloperEvaluation.Api` project is set as the startup project:
+   - Right-click on the project in Solution Explorer
+   - Select "Set as Startup Project"
+2. Press F5 or click the "Start" button (green play icon) to run the application
+3. Wait for the application to start and the browser to open automatically
 
-* Sale number
-* Date when the sale was made
-* Customer
-* Total sale amount
-* Branch where the sale was made
-* Products
-* Quantities
-* Unit prices
-* Discounts
-* Total amount for each item
-* Cancelled/Not Cancelled
+## 7. Verify Everything is Working
+1. The browser should automatically open with the URL: `https://localhost:7001/swagger`
+2. In the Swagger interface, you'll see all available endpoints
+3. Test some basic endpoints like:
+   - GET /api/ProductTypes (to list product types)
+   - GET /api/Sales (to list sales)
 
-It's not mandatory, but it would be a differential to build code for publishing events of:
-* SaleCreated
-* SaleModified
-* SaleCancelled
-* ItemCancelled
 
-If you write the code, **it's not required** to actually publish to any Message Broker. You can log a message in the application log or however you find most convenient.
-
-### Business Rules
-
-* Purchases above 4 identical items have a 10% discount
-* Purchases between 10 and 20 identical items have a 20% discount
-* It's not possible to sell above 20 identical items
-* Purchases below 4 items cannot have a discount
-
-These business rules define quantity-based discounting tiers and limitations:
-
-1. Discount Tiers:
-   - 4+ items: 10% discount
-   - 10-20 items: 20% discount
-
-2. Restrictions:
-   - Maximum limit: 20 items per product
-   - No discounts allowed for quantities below 4 items
-
-## Overview
-This section provides a high-level overview of the project and the various skills and competencies it aims to assess for developer candidates. 
-
-See [Overview](/.doc/overview.md)
-
-## Tech Stack
-This section lists the key technologies used in the project, including the backend, testing, frontend, and database components. 
-
-See [Tech Stack](/.doc/tech-stack.md)
-
-## Frameworks
-This section outlines the frameworks and libraries that are leveraged in the project to enhance development productivity and maintainability. 
-
-See [Frameworks](/.doc/frameworks.md)
-
-<!-- 
-## API Structure
-This section includes links to the detailed documentation for the different API resources:
-- [API General](./docs/general-api.md)
-- [Products API](/.doc/products-api.md)
-- [Carts API](/.doc/carts-api.md)
-- [Users API](/.doc/users-api.md)
-- [Auth API](/.doc/auth-api.md)
--->
-
-## Project Structure
-This section describes the overall structure and organization of the project files and directories. 
-
-See [Project Structure](/.doc/project-structure.md)
+## 9. To Stop the Application
+1. To stop the PostgreSQL container:
+```powershell
+docker-compose down
+```
